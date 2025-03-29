@@ -19,44 +19,41 @@ def execute_sql(conn, sql):
     except Error as error:
         print(error)
 
+def add_column(conn, table, column_name, column_type):
+    sql = f"ALTER TABLE {table} ADD COLUMN {column_name} {column_type}"
+    cur = conn.cursor()
+    cur.execute(sql)
+    conn.commit()
+    print(f"'{column_name}' column was added to '{table}' table.")
 
-if __name__ == '__main__':
 
-    create_topics_sql = """
-    CREATE TABLE IF NOT EXISTS topics (
-    TopicID integer PRIMARY KEY,
-    Area varchar(255) NOT NULL,
-    PersonResponsible1 varchar(255) NOT NULL,
-    PersonResponsible2 varchar(255)
-    );
-    """
+create_topics_sql = """
+CREATE TABLE IF NOT EXISTS topics (
+TopicID integer PRIMARY KEY,
+Area varchar(255) NOT NULL,
+PersonResponsible1 varchar(255) NOT NULL,
+PersonResponsible2 varchar(255)
+);
+"""
 
-    create_steps_sql = """
-    CREATE TABLE IF NOT EXISTS steps (
-    StepID integer PRIMARY KEY,
-    Name varchar(255) NOT NULL,
-    Description varchar(255),
-    TopicID integer NOT NULL,
-    Deadline text NOT NULL,
-    FOREIGN KEY (TopicID) REFERENCES topics(TopicID)
-    );
-    """
+create_steps_sql = """
+CREATE TABLE IF NOT EXISTS steps (
+StepID integer PRIMARY KEY,
+Name varchar(255) NOT NULL,
+Description varchar(255),
+TopicID integer NOT NULL,
+Deadline text NOT NULL,
+FOREIGN KEY (TopicID) REFERENCES topics(TopicID)
+);
+"""
 
-    create_howtos_sql = """
-    CREATE TABLE IF NOT EXISTS howtos (
-    HowtoID integer PRIMARY KEY,
-    Name varchar(255) NOT NULL,
-    Tools varchar(255),
-    SME varchar(255),
-    Steps varchar(255),
-    FOREIGN KEY (Steps) REFERENCES steps(Name)
-    );
-    """
-
-    db_file = "campervan_database.db"
-    conn = create_connection("campervan_database.db")
-    if conn is not None:
-        execute_sql(conn, create_topics_sql)
-        execute_sql(conn, create_steps_sql)
-        execute_sql(conn, create_howtos_sql)
-        conn.close()
+create_howtos_sql = """
+CREATE TABLE IF NOT EXISTS howtos (
+HowtoID integer PRIMARY KEY,
+Name varchar(255) NOT NULL,
+Tools varchar(255),
+SME varchar(255),
+Steps varchar(255),
+FOREIGN KEY (Steps) REFERENCES steps(Name)
+);
+"""
